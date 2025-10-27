@@ -638,6 +638,94 @@ def visualize_selected_patches_cv2_non_overlapping(
     
     return annotated_image_pil
 
+# ...existing code...
+
 if __name__ == '__main__':
-    # Add visualizing!
-    pass
+    import argparse
+    
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Visualize entropy-based patch selection')
+    parser.add_argument('--image_path', type=str, default='path/to/your/image.jpg',
+                        help='Path to the input image')
+    parser.add_argument('--patch_size', type=int, default=16,
+                        help='Base patch size (default: 16)')
+    parser.add_argument('--num_scales', type=int, default=2,
+                        help='Number of scales (default: 2)')
+    parser.add_argument('--thresholds', type=float, nargs='+', default=[5.0],
+                        help='Entropy thresholds for each scale (default: [5.0])')
+    parser.add_argument('--output_path', type=str, default='patchified_output.png',
+                        help='Path to save the output image (default: patchified_output.png)')
+    parser.add_argument('--method', type=str, default='entropy', choices=['entropy', 'laplacian', 'mse'],
+                        help='Method to compute patch complexity (default: entropy)')
+    
+    args = parser.parse_args()
+    
+    # Load image
+    print(f"Loading image from: {args.image_path}")
+    image = Image.open(args.image_path).convert('RGB')
+    
+    # Convert to tensor
+    image_tensor = TF.to_tensor(image) * 255.0  # Convert to [0, 255] range
+    
+    # Compute complexity maps based on selected method
+    print(f"Computing {args.method} maps with patch size {args.patch_size} and {args.num_scales} scales...")
+    if args.method == 'entropy':
+        complexity_maps = compute_patch_entropy_vectorized(
+            image_tensor, 
+            patch_size=args.patch_size, 
+            num_scales=args.num_scales
+        )
+    elif args.method == 'laplacian':
+        complexity_maps = compute_patch_laplacian_vectorized(
+            image_tensor,
+            patch_size=args.patch_size,
+            num_scales=args.num_scales
+        )
+    elif args.method == 'mse':
+        complexity_maps = compute_patch_mse_batched(
+            image_tensor.unsqueeze(0),
+            patch_size=args.patch_size,
+            num_scales=args.num_scales
+        )
+        # Remove batch dimension
+        complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
+    
+    # Display complexity statistics
+    print(f"\n{args.method.capitalize()} statistics:")
+    patch_sizes = sorted(complexity_maps.keys())
+    for ps in patch_sizes:
+        complexity_map = complexity_maps[ps]
+        print(f"  Patch size {ps}: min={complexity_map.min():.4f}, "
+              f"max={complexity_map.max():.4f}, mean={complexity_map.mean():.4f}")
+    
+    # Select patches based on thresholds
+    print(f"\nSelecting patches with thresholds: {args.thresholds}")
+    masks = select_patches_by_threshold(complexity_maps, args.thresholds)
+    
+    # Display patch selection statistics
+    print(f"\nPatch selection statistics:")
+    for ps in patch_sizes:
+        num_selected = masks[ps].sum().item()
+        total_patches = masks[ps].numel()
+        percentage = (num_selected / total_patches) * 100
+        print(f"  Patch size {ps}: {num_selected}/{total_patches} patches selected ({percentage:.1f}%)")
+    
+    # Visualize selected patches
+    print(f"\nVisualizing selected patches...")
+    annotated_image = visualize_selected_patches_cv2_non_overlapping(
+        image_tensor,
+        masks,
+        patch_sizes,
+        color=(255, 255, 255),
+        thickness=2
+    )
+    
+    # Save output
+    annotated_image.save(args.output_path)
+    print(f"Saved output to: {args.output_path}")
+    
+    # Display the image if running in an interactive environment
+    try:
+        annotated_image.show()
+    except:
+        print("Cannot display image (non-interactive environment)")
