@@ -670,7 +670,7 @@ if __name__ == '__main__':
     # Compute complexity maps based on selected method
     print(f"Computing {args.method} maps with patch size {args.patch_size} and {args.num_scales} scales...")
     if args.method == 'entropy':
-        complexity_maps = compute_patch_entropy_vectorized(
+        complexity_maps = compute_patch_entropy_batched(
             image_tensor.unsqueeze(0),  # Add batch dimension
             patch_size=args.patch_size, 
             num_scales=args.num_scales
