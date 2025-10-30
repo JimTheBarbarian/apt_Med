@@ -687,8 +687,8 @@ if __name__ == '__main__':
             patch_size=args.patch_size,
             num_scales=args.num_scales
         )
-        # Remove batch dimension
-        complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
+    # Remove batch dimension
+    complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
     
     # Display complexity statistics
     print(f"\n{args.method.capitalize()} statistics:")
