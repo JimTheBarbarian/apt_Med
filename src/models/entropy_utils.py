@@ -214,7 +214,6 @@ def select_patches_by_threshold(entropy_maps, thresholds, alpha=1.):
             # Upscale mask to match smaller patch size
             smaller_size = patch_sizes[j]
             scale_factor = current_size // smaller_size 
-            print(masks[current_size].shape)
             mask_upscaled = masks[current_size].repeat_interleave(scale_factor, dim=1).repeat_interleave(scale_factor, dim=2)
             
             # Ensure upscaled mask matches the dimensions of smaller patches
