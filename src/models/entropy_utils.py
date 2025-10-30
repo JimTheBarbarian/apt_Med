@@ -653,7 +653,7 @@ if __name__ == '__main__':
                         help='Base patch size (default: 16)')
     parser.add_argument('--num_scales', type=int, default=2,
                         help='Number of scales (default: 2)')
-    parser.add_argument('--thresholds', nargs='+', default=[5.0],
+    parser.add_argument('--thresholds', type=float, nargs='+', default=[5.0],
                         help='Entropy thresholds for each scale (default: [5.0])')
     parser.add_argument('--output_folder', type=str, default='outputs',
                         help='Path to save output images (default: outputs)')
