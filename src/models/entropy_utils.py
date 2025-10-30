@@ -713,7 +713,7 @@ if __name__ == '__main__':
     # Visualize selected patches
     print(f"\nVisualizing selected patches...")
     annotated_image = visualize_selected_patches_cv2_non_overlapping(
-        image_tensor,
+        image_tensor.squeeze(),
         masks,
         patch_sizes,
         color=(255, 255, 255),
