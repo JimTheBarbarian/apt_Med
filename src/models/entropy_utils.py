@@ -671,13 +671,13 @@ if __name__ == '__main__':
     print(f"Computing {args.method} maps with patch size {args.patch_size} and {args.num_scales} scales...")
     if args.method == 'entropy':
         complexity_maps = compute_patch_entropy_vectorized(
-            image_tensor, 
+            image_tensor.unsqueeze(0),  # Add batch dimension
             patch_size=args.patch_size, 
             num_scales=args.num_scales
         )
     elif args.method == 'laplacian':
         complexity_maps = compute_patch_laplacian_vectorized(
-            image_tensor,
+            image_tensor.unsqueeze(0),
             patch_size=args.patch_size,
             num_scales=args.num_scales
         )
