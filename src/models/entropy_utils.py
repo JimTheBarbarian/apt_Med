@@ -686,6 +686,7 @@ if __name__ == '__main__':
     print(f"Found {len(image_files)} image(s) to process")
     
     # Format thresholds for filename
+    print(f"Using thresholds: {args.thresholds}")
     thresholds_str = '_'.join([f"{t:.2f}" for t in args.thresholds])
     
     # Process each image
