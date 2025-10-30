@@ -647,7 +647,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Visualize entropy-based patch selection')
     parser.add_argument('--image_folder', type=str, required=True,
                         help='Path to the folder containing input images')
-    parser.add_argument('--num_images', type=int, default=None,
+    parser.add_argument('--num_images', type=int, default=100,
                         help='Number of images to process (default: all images in folder)')
     parser.add_argument('--patch_size', type=int, default=16,
                         help='Base patch size (default: 16)')
