@@ -602,8 +602,7 @@ def visualize_selected_patches_cv2_non_overlapping(
     for patch_size_idx in range(len(patch_sizes)):
         patch_size = patch_sizes[patch_size_idx]
         mask = masks[patch_size]
-        mask.squeeze()  # Ensure mask is 2D
-        print(mask.shape)
+        mask = mask.squeeze()  # Ensure mask is 2D
         H, W = mask.shape
         for i in range(H):
             for j in range(W):
