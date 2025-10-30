@@ -711,7 +711,7 @@ if __name__ == '__main__':
                 num_scales=args.num_scales
             )
             # Remove batch dimension
-            complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
+            #complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
         elif args.method == 'laplacian':
             complexity_maps = compute_patch_laplacian_vectorized(
                 image_tensor,
