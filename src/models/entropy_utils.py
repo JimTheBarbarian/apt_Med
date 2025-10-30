@@ -602,7 +602,7 @@ def visualize_selected_patches_cv2_non_overlapping(
     for patch_size_idx in range(len(patch_sizes)):
         patch_size = patch_sizes[patch_size_idx]
         mask = masks[patch_size]
-        
+        mask.squeeze()  # Ensure mask is 2D
         H, W = mask.shape
         for i in range(H):
             for j in range(W):
@@ -687,8 +687,8 @@ if __name__ == '__main__':
             patch_size=args.patch_size,
             num_scales=args.num_scales
         )
-    # Remove batch dimension
-    complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
+        # Remove batch dimension
+        complexity_maps = {k: v.squeeze(0) for k, v in complexity_maps.items()}
     
     # Display complexity statistics
     print(f"\n{args.method.capitalize()} statistics:")
